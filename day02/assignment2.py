@@ -5,8 +5,6 @@ from PIL import Image, ImageTk, ImageDraw
 import random
 import math
 import ephem
-import ephem
-from datetime import datetime, timezone, timedelta
 
 def create_starry_background(width, height):
     # Create a dark blue background
@@ -59,20 +57,46 @@ def get_rising_sign(date, lat, lon):
     degrees = math.degrees(rasc) % 360
     return get_zodiac_sign_from_angle(degrees)
 
+def get_sun_sign(day, month):
+    if (month == 3 and day >= 21) or (month == 4 and day <= 19):
+        return "♈ Aries"
+    elif (month == 4 and day >= 20) or (month == 5 and day <= 20):
+        return "♉ Taurus"
+    elif (month == 5 and day >= 21) or (month == 6 and day <= 20):
+        return "♊ Gemini"
+    elif (month == 6 and day >= 21) or (month == 7 and day <= 22):
+        return "♋ Cancer"
+    elif (month == 7 and day >= 23) or (month == 8 and day <= 22):
+        return "♌ Leo"
+    elif (month == 8 and day >= 23) or (month == 9 and day <= 22):
+        return "♍ Virgo"
+    elif (month == 9 and day >= 23) or (month == 10 and day <= 22):
+        return "♎ Libra"
+    elif (month == 10 and day >= 23) or (month == 11 and day <= 21):
+        return "♏ Scorpio"
+    elif (month == 11 and day >= 22) or (month == 12 and day <= 21):
+        return "♐ Sagittarius"
+    elif (month == 12 and day >= 22) or (month == 1 and day <= 19):
+        return "♑ Capricorn"
+    elif (month == 1 and day >= 20) or (month == 2 and day <= 18):
+        return "♒ Aquarius"
+    else:
+        return "♓ Pisces"
+
 def get_sign_description(sign):
     descriptions = {
-        "♈ Aries": "Dynamic, confident, and adventurous",
-        "♉ Taurus": "Reliable, patient, and determined",
-        "♊ Gemini": "Versatile, expressive, and curious",
-        "♋ Cancer": "Nurturing, intuitive, and emotional",
-        "♌ Leo": "Charismatic, generous, and proud",
-        "♍ Virgo": "Analytical, practical, and perfectionist",
-        "♎ Libra": "Harmonious, diplomatic, and charming",
-        "♏ Scorpio": "Intense, passionate, and transformative",
-        "♐ Sagittarius": "Optimistic, adventurous, and philosophical",
-        "♑ Capricorn": "Ambitious, disciplined, and patient",
-        "♒ Aquarius": "Innovative, independent, and humanitarian",
-        "♓ Pisces": "Compassionate, artistic, and intuitive"
+        "♈ Aries": "Dynamic, confident, and adventurous. Natural leader with boundless energy.",
+        "♉ Taurus": "Reliable, patient, and determined. Appreciates beauty and comfort.",
+        "♊ Gemini": "Versatile, expressive, and curious. Quick-witted communicator.",
+        "♋ Cancer": "Nurturing, intuitive, and emotional. Deep connection to home and family.",
+        "♌ Leo": "Charismatic, generous, and proud. Born leader with a flair for drama.",
+        "♍ Virgo": "Analytical, practical, and perfectionist. Detail-oriented problem solver.",
+        "♎ Libra": "Harmonious, diplomatic, and charming. Seeks balance and beauty.",
+        "♏ Scorpio": "Intense, passionate, and transformative. Deeply emotional and mysterious.",
+        "♐ Sagittarius": "Optimistic, adventurous, and philosophical. Seeker of truth and wisdom.",
+        "♑ Capricorn": "Ambitious, disciplined, and patient. Natural manager and achiever.",
+        "♒ Aquarius": "Innovative, independent, and humanitarian. Forward-thinking visionary.",
+        "♓ Pisces": "Compassionate, artistic, and intuitive. Deeply spiritual and empathetic."
     }
     return descriptions.get(sign, "Unknown sign")
 
@@ -91,37 +115,38 @@ def create_zodiac_gui():
                 messagebox.showerror("Error", "Please enter valid latitude and longitude")
                 return
             
-            # Determine zodiac sign
-            if (month == 3 and day >= 21) or (month == 4 and day <= 19):
-                sign = "♈ Aries"
-            elif (month == 4 and day >= 20) or (month == 5 and day <= 20):
-                sign = "♉ Taurus"
-            elif (month == 5 and day >= 21) or (month == 6 and day <= 20):
-                sign = "♊ Gemini"
-            elif (month == 6 and day >= 21) or (month == 7 and day <= 22):
-                sign = "♋ Cancer"
-            elif (month == 7 and day >= 23) or (month == 8 and day <= 22):
-                sign = "♌ Leo"
-            elif (month == 8 and day >= 23) or (month == 9 and day <= 22):
-                sign = "♍ Virgo"
-            elif (month == 9 and day >= 23) or (month == 10 and day <= 22):
-                sign = "♎ Libra"
-            elif (month == 10 and day >= 23) or (month == 11 and day <= 21):
-                sign = "♏ Scorpio"
-            elif (month == 11 and day >= 22) or (month == 12 and day <= 21):
-                sign = "♐ Sagittarius"
-            elif (month == 12 and day >= 22) or (month == 1 and day <= 19):
-                sign = "♑ Capricorn"
-            elif (month == 1 and day >= 20) or (month == 2 and day <= 18):
-                sign = "♒ Aquarius"
-            else:
-                sign = "♓ Pisces"
+            # Calculate sun sign
+            day = date_obj.day
+            month = date_obj.month
+            sun_sign = get_sun_sign(day, month)
             
-            # Update result label
-            result_label.config(text=f"Your zodiac sign is: {sign}")
+            # Calculate moon and rising signs
+            moon_sign = get_moon_sign(date_obj, lat, lon)
+            rising_sign = get_rising_sign(date_obj, lat, lon)
             
-        except ValueError:
-            messagebox.showerror("Error", "Please enter date in format DD/MM/YYYY")
+            # Clear previous results
+            result_text.delete(1.0, tk.END)
+            
+            # Add new results with formatting
+            result_text.insert(tk.END, "✨ Your Zodiac Profile ✨\n\n", 'title')
+            
+            result_text.insert(tk.END, "Sun Sign (Core Identity):\n", 'title')
+            result_text.insert(tk.END, f"{sun_sign}\n", 'sign')
+            result_text.insert(tk.END, f"{get_sign_description(sun_sign)}\n\n", 'description')
+            
+            result_text.insert(tk.END, "Moon Sign (Emotional Nature):\n", 'title')
+            result_text.insert(tk.END, f"{moon_sign}\n", 'sign')
+            result_text.insert(tk.END, f"{get_sign_description(moon_sign)}\n\n", 'description')
+            
+            result_text.insert(tk.END, "Rising Sign (External Persona):\n", 'title')
+            result_text.insert(tk.END, f"{rising_sign}\n", 'sign')
+            result_text.insert(tk.END, f"{get_sign_description(rising_sign)}\n\n", 'description')
+            
+            # Make text read-only
+            result_text.configure(state='disabled')
+            
+        except ValueError as e:
+            messagebox.showerror("Error", "Please enter date in format DD/MM/YYYY and time in format HH:MM")
 
     # Create main window
     root = tk.Tk()
