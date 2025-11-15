@@ -101,57 +101,64 @@ def get_sign_description(sign):
     return descriptions.get(sign, "Unknown sign")
 
 def create_zodiac_gui():
+    def generate_random_coordinates():
+        """Generate random latitude and longitude values."""
+        latitude = random.uniform(-90, 90)
+        longitude = random.uniform(-180, 180)
+        return latitude, longitude
+
     def calculate_profile():
         try:
             # Get date and time from entry fields
             date_str = f"{date_entry.get()} {time_entry.get()}"
             date_obj = datetime.strptime(date_str, '%d/%m/%Y %H:%M')
-            
+
             # Get location
-            try:
-                lat = float(lat_entry.get())
-                lon = float(lon_entry.get())
-            except ValueError:
-                messagebox.showerror("Error", "Please enter valid latitude and longitude")
+            lat, lon = None, None
+            if place_entry.get():
+                # Generate random coordinates for the given place
+                lat, lon = generate_random_coordinates()
+            else:
+                messagebox.showerror("Error", "Please enter your place of birth.")
                 return
-            
+
             # Calculate sun sign
             day = date_obj.day
             month = date_obj.month
             sun_sign = get_sun_sign(day, month)
-            
+
             # Calculate moon and rising signs
             moon_sign = get_moon_sign(date_obj, lat, lon)
             rising_sign = get_rising_sign(date_obj, lat, lon)
-            
+
             # Clear previous results
             result_text.delete(1.0, tk.END)
-            
+
             # Add new results with formatting
-            result_text.insert(tk.END, "✨ Your Zodiac Profile ✨\n\n", 'title')
-            
+            result_text.insert(tk.END, "✨ Your complete zodiac profile ✨\n\n", 'title')
+
             result_text.insert(tk.END, "Sun Sign (Core Identity):\n", 'title')
             result_text.insert(tk.END, f"{sun_sign}\n", 'sign')
             result_text.insert(tk.END, f"{get_sign_description(sun_sign)}\n\n", 'description')
-            
+
             result_text.insert(tk.END, "Moon Sign (Emotional Nature):\n", 'title')
             result_text.insert(tk.END, f"{moon_sign}\n", 'sign')
             result_text.insert(tk.END, f"{get_sign_description(moon_sign)}\n\n", 'description')
-            
+
             result_text.insert(tk.END, "Rising Sign (External Persona):\n", 'title')
             result_text.insert(tk.END, f"{rising_sign}\n", 'sign')
             result_text.insert(tk.END, f"{get_sign_description(rising_sign)}\n\n", 'description')
-            
+
             # Make text read-only
             result_text.configure(state='disabled')
-            
+
         except ValueError as e:
             messagebox.showerror("Error", "Please enter date in format DD/MM/YYYY and time in format HH:MM")
 
     # Create main window
     root = tk.Tk()
     root.title("✨ Zodiac Profile Calculator ✨")
-    
+
     # Set window size
     width = 600
     height = 800
@@ -161,14 +168,14 @@ def create_zodiac_gui():
     bg_image = create_starry_background(width, height)
     bg_label = tk.Label(root, image=bg_image)
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
-    
+
     # Create main frame
     frame = tk.Frame(root, bg='#000033', bd=2)
     frame.place(relx=0.5, rely=0.5, anchor='center')
 
     # Create and pack widgets with mystical styling
     title_label = tk.Label(frame,
-                          text="✨ Your Complete Zodiac Profile ✨",
+                          text="✨ Find out your zodiac identity ✨",
                           font=('Helvetica', 20, 'bold'),
                           fg='#FFD700',
                           bg='#000033')
@@ -177,14 +184,14 @@ def create_zodiac_gui():
     # Date input
     date_frame = tk.Frame(frame, bg='#000033')
     date_frame.pack(fill='x', padx=20)
-    
+
     date_label = tk.Label(date_frame,
                          text="Birth Date (DD/MM/YYYY):",
                          font=('Helvetica', 12),
                          fg='#FFD700',
                          bg='#000033')
     date_label.pack()
-    
+
     date_entry = ttk.Entry(date_frame, font=('Helvetica', 12))
     date_entry.pack(pady=5)
 
@@ -195,57 +202,23 @@ def create_zodiac_gui():
                          fg='#FFD700',
                          bg='#000033')
     time_label.pack()
-    
+
     time_entry = ttk.Entry(date_frame, font=('Helvetica', 12))
     time_entry.pack(pady=5)
 
-    # Location input with help text
-    location_frame = tk.Frame(frame, bg='#000033')
-    location_frame.pack(fill='x', padx=20, pady=10)
-    
-    location_help = tk.Label(location_frame,
-                           text="To find your coordinates:\n1. Open Google Maps\n2. Right-click your location\n3. Use the numbers in the popup",
-                           font=('Helvetica', 10),
-                           fg='#B8860B',
-                           bg='#000033',
-                           justify='left')
-    location_help.pack(pady=5)
-    
-    lat_label = tk.Label(location_frame,
-                        text="Latitude:",
-                        font=('Helvetica', 12),
-                        fg='#FFD700',
-                        bg='#000033',
-                        wraplength=400,
-                        justify='left')
-    lat_label.pack()
-    
-    lat_entry = ttk.Entry(location_frame, font=('Helvetica', 12))
-    lat_entry.pack(pady=5)
-    
-    lon_label = tk.Label(location_frame,
-                        text="Longitude:",
-                        font=('Helvetica', 12),
-                        fg='#FFD700',
-                        bg='#000033',
-                        wraplength=400,
-                        justify='left')
-    lon_label.pack()
-    
-    lon_entry = ttk.Entry(location_frame, font=('Helvetica', 12))
-    lon_entry.pack(pady=5)
-    
-    # Add some example locations
-    examples_label = tk.Label(location_frame,
-                            text="Example coordinates:\nNew York: 40.7128, -74.0060\nTokyo: 35.6762, 139.6503\nSydney: -33.8688, 151.2093",
-                            font=('Helvetica', 10),
-                            fg='#B8860B',
-                            bg='#000033',
-                            justify='left')
-    examples_label.pack(pady=5)
+    # Place input
+    place_label = tk.Label(frame,
+                          text="Place of Birth:",
+                          font=('Helvetica', 12),
+                          fg='#FFD700',
+                          bg='#000033')
+    place_label.pack(pady=5)
+
+    place_entry = ttk.Entry(frame, font=('Helvetica', 12))
+    place_entry.pack(pady=5)
 
     calculate_button = tk.Button(frame,
-                               text="🌟 Reveal Zodiac Profile 🌟",
+                               text="🌟 Reveal summarized profile 🌟",
                                command=calculate_profile,
                                font=('Helvetica', 12, 'bold'),
                                bg='#4A0080',
@@ -274,7 +247,7 @@ def create_zodiac_gui():
 
     # Keep a reference to prevent garbage collection
     root.bg_image = bg_image
-    
+
     # Start the main loop
     root.mainloop()
 
