@@ -1,47 +1,40 @@
-# Day 04 – Downloading protein data from UniProt
+# 🧬 Day 04 – UniProt Protein Search & FASTA Downloader
 
-## What the program does
+## 📌 Overview
 
-This program downloads protein information from the [UniProt](https://www.uniprot.org/) database using its public REST API.
+This program allows the user to search for proteins in the **UniProt** database using a **simple keyword** (gene name, protein name, function, etc.) without requiring prior knowledge of the UniProt accession ID.
 
-The user provides:
+After searching, the program displays a numbered list of matches, and the user can select which entries to download. The corresponding **FASTA sequences** are then retrieved and saved locally.
 
-- a **keyword** (for example: `kinase`, `transcription factor`, `zinc finger`)
-- an **organism name** (for example: `Homo sapiens`, `Saccharomyces cerevisiae`)
-- a **maximum number of results**
+---
 
-The program sends a query to the UniProt API and saves the results as a TSV (tab-separated values) file in the `data/` folder:
+## 🧠 How It Works
 
-- `data/uniprot_results.tsv`
+### User Input:
+- A keyword for searching UniProt (e.g. `MSN2`, `p53`, `hemoglobin`)
+- The number of search results to display
+- Which entries to download (by index number or `all`)
+- Where to save the downloaded files
 
-The file contains the following columns for each protein:
+### Output:
+- FASTA files for each selected protein
 
-- UniProt accession
-- primary gene name
-- protein name
-- organism name
-- sequence length
+Example output files:
 
-The program uses a command-line interface (CLI) as its UI.
+data/P15364.fasta
 
-## Code structure
+data/O59764.fasta
 
-- `uniprot_logic.py` – **business logic**  
-  Contains the functions that:
-  - build the UniProt query
-  - contact the UniProt REST API
-  - save the downloaded TSV data to a local file
+This project uses the official UniProt REST API:
 
-- `main.py` – **user interface**  
-  Handles the interaction with the user (input and print), and calls the
-  functions in `uniprot_logic.py`.
+Main site: https://www.uniprot.org/
 
-- `data/` – output directory where the TSV file is saved.
+Search endpoint: https://rest.uniprot.org/uniprotkb/search
 
-## Secrets / configuration
+FASTA download example:
+https://rest.uniprot.org/uniprotkb/P15364.fasta
 
-The UniProt REST API does not require an email address or API key for this kind of simple query, so no secrets file is needed.  
-If I used a service that required an email or API key, I would put it in a separate file (for example `config.py`) and add that filename to `.gitignore` so it would not be committed to git.
+This API is fully public and does not require authentication.
 
 ## Interaction with AI
 
