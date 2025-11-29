@@ -2,9 +2,9 @@
 
 ## 📌 Overview
 
-This program allows the user to search for proteins in the **UniProt** database using a **simple keyword** (gene name, protein name, function, etc.) without requiring prior knowledge of the UniProt accession ID.
+This program helps you search for proteins in the **UniProt** database using a **simple keyword** (gene name, protein name, function, etc.) 
 
-After searching, the program displays a numbered list of matches, and the user can select which entries to download. The corresponding **FASTA sequences** are then retrieved and saved locally.
+After searching, the program displays a numbered list of matches, and you can select which entries to download. The corresponding **FASTA sequences** are then retrieved and saved locally.
 
 ---
 
