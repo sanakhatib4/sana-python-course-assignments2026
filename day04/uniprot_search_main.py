@@ -1,3 +1,6 @@
+from pathlib import Path
+print("RUNNING FROM:", Path.cwd())
+
 from uniprot_search_logic import search_uniprot
 from uniprot_search_logic import download_many_fastas
 from pathlib import Path
@@ -26,3 +29,6 @@ def main():
 
     print("Finished!")
     print("Downloaded:", ", ".join(result["success"]))
+
+if __name__ == "__main__":
+    main()
