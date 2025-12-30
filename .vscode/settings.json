@@ -1,0 +1,8 @@
+{
+  "python.defaultInterpreterPath": "C:/Users/Sana/GitHub/sana-python-course-assignments2026-1/.venv/Scripts/python.exe",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportMissingModuleSource": "none",
+    "reportMissingImports": "none"
+  }
+}
